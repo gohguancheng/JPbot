@@ -21,7 +21,7 @@ commands.command("start", async (ctx) => {
   await ctx.reply(
     `Hello there${
       name ? ` ${name}` : ""
-    },\n\nI am the JPLaundryBot.\nI can help with queries you may have about J&P Laundry.` +
+    },\n\nI am the JPLaundryBot.\nI can help with queries you may have about J&P Laundry.\nI seek your patience and understanding for any errors as I am still under construction.` +
       "\n\n<u>Available Commands</u>" +
       "\n/address - Locate J&P Laundry." +
       "\n/pricing - Learn about availabe services." +
