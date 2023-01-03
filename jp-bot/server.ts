@@ -1,14 +1,16 @@
 import { env } from "./../env";
 import { Bot, Context, SessionFlavor } from "grammy";
 import { hydrateReply, parseMode } from "@grammyjs/parse-mode";
+import { commands } from "./commands/info";
+import { callback } from "./callbacks/callback-responses";
 
 import type { ParseModeFlavor } from "@grammyjs/parse-mode";
 
 interface SessionData {}
 
-type MyContext = Context & SessionFlavor<SessionData>;
+export type MyContext = ParseModeFlavor<Context & SessionFlavor<SessionData>>;
 
-const bot = new Bot<ParseModeFlavor<MyContext>>(env.JP_TOKEN || env.TEST_TOKEN);
+const bot = new Bot<MyContext>(env.JP_TOKEN || env.TEST_TOKEN);
 
 async function runJPBot() {
   await bot.use(hydrateReply);
@@ -22,8 +24,29 @@ async function runJPBot() {
     }
   });
 
-  await bot.command("start", (ctx) => ctx.reply("Welcome! Up and running."));
-  await bot.on("message", (ctx) => ctx.reply("Got another message!"));
+  await bot.api.setMyCommands([
+    { command: "start", description: "Start the bot" },
+    { command: "address", description: "Locate shop" },
+    { command: "pricing", description: "Learn about services and price list" },
+    { command: "hours", description: "See updated operating hours" },
+    {
+      command: "contact",
+      description: "Speak to us during opening hours",
+    },
+    {
+      command: "about",
+      description: "Learn about J&P Laundry",
+    },
+  ]);
+
+  await bot.use(commands);
+  await bot.use(callback);
+
+  await bot.on("message:text", (ctx) =>
+    ctx.reply(
+      "Apologies! I only understand commands at the moment. e.g. /start"
+    )
+  );
 
   if (env.isDev) bot.start();
 }
