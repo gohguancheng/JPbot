@@ -34,8 +34,7 @@ commands.command("start", async (ctx) => {
 
 const aboutKeyboard = new InlineKeyboard()
   .text("Location", "address")
-  .row()
-  .text("About Services", "services");
+  .text("Services Details", "pricing");
 
 commands.command("about", async (ctx) => {
   await ctx.reply(
@@ -48,14 +47,16 @@ commands.command("about", async (ctx) => {
 const addressKeyboard = new InlineKeyboard()
   .text("Opening Hours", "hours")
   .url("See Google Maps", "https://goo.gl/maps/wMbykCVjjqV2vjyG8");
-commands.command("address", async (ctx) => {
+
+export const addressResponse = async (ctx: MyContext) => {
   ctx.reply(
     "J&P Laundry is located at:\n<code>150 Silat Ave, #01-40 Block 150, Singapore 160150</code>",
     {
       reply_markup: addressKeyboard,
     }
   );
-});
+};
+commands.command("address", addressResponse);
 
 export const hoursResponse = async (ctx: MyContext) => {
   const announcement = "";
@@ -79,5 +80,5 @@ commands.command("contact", async (ctx) => {
 });
 
 commands.command("pricing", async (ctx) => {
-  await ctx.reply("Price and Services Info coming soon..");
+  await ctx.reply("Pricing and Services Info coming soon..");
 });
