@@ -20,12 +20,11 @@ app.post(`/${JpRoute}`, webhookCallback(JpBot, "express"));
 app.listen(port, async () => {
   // setWebhook not required if webhook is set manually via https://api.telegram.org/bot<bot_token>/setWebhook?url=<webhook_url>
   if (env.isProd) {
-    console.log(`set webhook: https://${domain}/${JpRoute}`);
-    await JpBot.api.setWebhook(`https://${domain}/${JpRoute}`);
-    console.log(`JP Bot listening on https://${domain}/${JpRoute}`);
+    await JpBot.api.setWebhook(`${domain}/${JpRoute}`);
+    console.log(`JP Bot listening on ${domain}/${JpRoute}:${port}`);
 
     setInterval(() => {
-      https.get(`https://${domain}/healthcheck`);
+      https.get(`${domain}/healthcheck`);
       console.log("ping!");
     }, 5 * 60 * 1000); // every 5 minutes
   } else {
