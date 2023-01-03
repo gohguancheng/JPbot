@@ -1,6 +1,8 @@
 {
   "name": "JP-Telegram-Bot",
   "version": "1.0.0",
+  "main": "dist/index",
+  "typings": "dist/index",
   "scripts": {
     "build": "npm install && npx tsc",
     "start": "node ./dist/index.js",

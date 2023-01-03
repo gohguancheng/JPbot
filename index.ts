@@ -20,6 +20,7 @@ app.post(`/${JpRoute}`, webhookCallback(JpBot, "express"));
 app.listen(port, async () => {
   // setWebhook not required if webhook is set manually via https://api.telegram.org/bot<bot_token>/setWebhook?url=<webhook_url>
   if (env.isProd) {
+    console.log(`set webhook: https://${domain}/${JpRoute}`);
     await JpBot.api.setWebhook(`https://${domain}/${JpRoute}`);
     console.log(`JP Bot listening on https://${domain}/${JpRoute}`);
 
