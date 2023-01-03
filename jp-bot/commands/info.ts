@@ -21,13 +21,14 @@ commands.command("start", async (ctx) => {
   await ctx.reply(
     `Hello there${
       name ? ` ${name}` : ""
-    },\n\nI am the JPLaundryBot.\nI can help with queries you may have about J&P Laundry.\nI seek your patience and understanding for any errors as I am still under construction.` +
+    },\n\nI am the JPLaundryBot.\nI can help with queries you may have about J&P Laundry.` +
       "\n\n<u>Available Commands</u>" +
       "\n/address - Locate J&P Laundry." +
       "\n/pricing - Learn about availabe services." +
       "\n/hours - Find out opening hours." +
       "\n/contact - Call us to find out more" +
-      "\n/about - Learn about J&P Laundry.",
+      "\n/about - Learn about J&P Laundry." +
+      "\n\n <i>I seek your patience and understanding for any errors as I am still under construction.</i>",
     { reply_markup: startKeyboard }
   );
 });
