@@ -14,7 +14,8 @@ callback.callbackQuery("address", async (ctx) => {
   await ctx.answerCallbackQuery();
 });
 
-callback.callbackQuery("pricing", async (ctx) => {
+callback.callbackQuery("services", async (ctx) => {
   await ctx.reply("Pricing and Services Info coming soon..");
   await ctx.answerCallbackQuery();
 });
+

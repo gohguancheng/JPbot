@@ -9,6 +9,7 @@ export const env = cleanEnv(process.env, {
   TEST_TOKEN: str({ default: "" }),
   JP_TOKEN: str({ devDefault: "" }),
   SUPER_USER_ID: num({ default: 0 }),
+  SUPER_J_ID: num(),
   DEBUG: str({ default: "" }),
   NODE_ENV: str({ choices: ["development", "production"] }),
 });

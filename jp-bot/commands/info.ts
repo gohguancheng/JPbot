@@ -1,7 +1,23 @@
 import { Composer, InlineKeyboard, Keyboard } from "grammy";
 import { MyContext } from "../server";
+import store from "./../store/index";
 
 export const commands = new Composer<MyContext>();
+
+const basicCommands = [
+  { command: "start", description: "Start the bot" },
+  { command: "address", description: "Locate shop" },
+  { command: "services", description: "Learn about services and price list" },
+  { command: "hours", description: "See updated operating hours" },
+  {
+    command: "contact",
+    description: "Speak to us during opening hours",
+  },
+  {
+    command: "about",
+    description: "Learn about J&P Laundry",
+  },
+];
 
 const startKeyboard = new Keyboard()
   .placeholder("Select commands from below")
@@ -9,7 +25,7 @@ const startKeyboard = new Keyboard()
   .resized()
   .text("/address")
   .row()
-  .text("/pricing")
+  .text("/services")
   .text("/hours")
   .row()
   .text("/contact")
@@ -18,13 +34,26 @@ const startKeyboard = new Keyboard()
 
 commands.command("start", async (ctx) => {
   const name = ctx.from?.first_name || ctx.from?.username;
+
+  if (ctx.session.isAdmin) {
+    await ctx.api.setMyCommands(
+      [
+        ...basicCommands,
+        { command: "changehours", description: "Add special announcement" },
+      ],
+      { scope: { type: "chat", chat_id: ctx.chat.id } }
+    );
+  } else {
+    await ctx.api.setMyCommands(basicCommands);
+  }
+
   await ctx.reply(
     `Hello there${
       name ? ` ${name}` : ""
     },\n\nI am the JPLaundryBot.\nI can help with queries you may have about J&P Laundry.` +
       "\n\n<u>Available Commands</u>" +
       "\n/address - Locate J&P Laundry" +
-      "\n/pricing - Learn about available services" +
+      "\n/services - Learn about available services" +
       "\n/hours - Find out opening hours" +
       "\n/contact - Call us to find out more" +
       "\n/about - Learn about J&P Laundry" +
@@ -35,7 +64,7 @@ commands.command("start", async (ctx) => {
 
 const aboutKeyboard = new InlineKeyboard()
   .text("Location", "address")
-  .text("Services Details", "pricing");
+  .text("Services", "services");
 
 commands.command("about", async (ctx) => {
   await ctx.reply(
@@ -60,11 +89,10 @@ export const addressResponse = async (ctx: MyContext) => {
 commands.command("address", addressResponse);
 
 export const hoursResponse = async (ctx: MyContext) => {
-  const announcement = "";
   await ctx.reply(
     "J&P Laundry is opened from:\n\n<b>10AM to 6PM</b>\n(Fri to Wed, closed on Thu)\n\n<i>*Subject to changes mentioned below</i>\n\n" +
-      (announcement
-        ? `<b>Special Announcements</b>\nPlease note operating hours are revised during these periods: ${announcement}`
+      (store.changes
+        ? `<b>Special Announcements</b>\n${store.changes}`
         : "<b>Special Announcements</b>\nNo special updates on opening hours")
   );
 };
@@ -80,6 +108,15 @@ commands.command("contact", async (ctx) => {
   );
 });
 
-commands.command("pricing", async (ctx) => {
+commands.command("services", async (ctx) => {
   await ctx.reply("Pricing and Services Info coming soon..");
+});
+
+commands.command("changehours", async (ctx) => {
+  if (ctx.session.isAdmin) {
+    ctx.session.action = "changehours";
+    await ctx.reply("Please enter special announcement message or enter 'reset' change to default message.", {
+      reply_markup: new InlineKeyboard().text("Cancel", "cancel"),
+    });
+  }
 });
