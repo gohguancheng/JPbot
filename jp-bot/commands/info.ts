@@ -115,7 +115,7 @@ commands.command("services", async (ctx) => {
 commands.command("changehours", async (ctx) => {
   if (ctx.session.isAdmin) {
     ctx.session.action = "changehours";
-    await ctx.reply("Please enter special announcement message or enter 'reset' change to default message.", {
+    await ctx.reply("Please enter special announcement message or enter 'reset' to revert to default message.", {
       reply_markup: new InlineKeyboard().text("Cancel", "cancel"),
     });
   }
