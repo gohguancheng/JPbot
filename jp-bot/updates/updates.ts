@@ -26,6 +26,7 @@ updates.use(async (ctx, next) => {
     } else if (ctx.msg.text) {
       store.original = store.changes;
       store.changes = ctx.msg.text;
+      
     }
     await ctx.reply(
       "<b>PLEASE CONFIRM</b>\n\n" + updateResponse(store.changes),
