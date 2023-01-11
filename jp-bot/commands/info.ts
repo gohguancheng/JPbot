@@ -6,6 +6,7 @@ export const commands = new Composer<MyContext>();
 
 const basicCommands = [
   { command: "start", description: "Start the bot" },
+  { command: "share", description: "Share me" },
   { command: "address", description: "Locate shop" },
   { command: "services", description: "Learn about services and price list" },
   { command: "hours", description: "See updated operating hours" },
@@ -24,6 +25,7 @@ const startKeyboard = new Keyboard()
   .oneTime()
   .resized()
   .text("/address")
+  .text("/share")
   .row()
   .text("/services")
   .text("/hours")
@@ -53,6 +55,7 @@ commands.command("start", async (ctx) => {
     },\n\nI am the JPLaundryBot.\nI can help with queries you may have about J&P Laundry.` +
       "\n\n<u>Available Commands</u>" +
       "\n/address - Locate J&P Laundry" +
+      "\n/share - Get link to share me with your friends" +
       "\n/services - Learn about available services" +
       "\n/hours - Find out opening hours" +
       "\n/contact - Call us to find out more" +
@@ -112,11 +115,22 @@ commands.command("services", async (ctx) => {
   await ctx.reply("Pricing and Services Info coming soon..");
 });
 
+commands.command(
+  "share",
+  async (ctx) =>
+    await ctx.reply(
+      `<b>Copy and share the following link</b>\n\n<pre>https://t.me/JPLaundryBot</pre>\n\n<i>Introduce your friends to me (@${ctx.me.username})!</i> 😊`
+    )
+);
+
 commands.command("changehours", async (ctx) => {
   if (ctx.session.isAdmin) {
     ctx.session.action = "changehours";
-    await ctx.reply("Please enter special announcement message or enter 'reset' to revert to default message.", {
-      reply_markup: new InlineKeyboard().text("Cancel", "cancel"),
-    });
+    await ctx.reply(
+      "Please enter special announcement message or enter 'reset' to revert to default message.",
+      {
+        reply_markup: new InlineKeyboard().text("Cancel", "cancel"),
+      }
+    );
   }
 });
