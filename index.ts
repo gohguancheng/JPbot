@@ -22,6 +22,14 @@ app.listen(port, async () => {
   if (env.isProd) {
     await JpBot.api.setWebhook(`${domain}/${JpRoute}`);
     console.log(`JP Bot listening on ${domain}/${JpRoute}:${port}`);
+    setInterval(async () => {
+      try {
+        await https.get(`https://${domain}/healthcheck`);
+        console.log("ping!");
+      } catch (err) {
+        console.log(err);
+      }
+    }, 10 * 60 * 1000); // every 10 minutes -> remove for AWS
   } else {
     console.log(`Webhook not set on dev env. Listening on localhost:${port}`);
   }
