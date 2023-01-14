@@ -22,9 +22,10 @@ app.listen(port, async () => {
   if (env.isProd) {
     await JpBot.api.setWebhook(`${domain}/${JpRoute}`);
     console.log(`JP Bot listening on ${domain}/${JpRoute}:${port}`);
+
     setInterval(async () => {
       try {
-        await https.get(`https://${domain}/healthcheck`);
+        await https.get(`${domain}/healthcheck`);
         console.log("ping!");
       } catch (err) {
         console.log(err);
