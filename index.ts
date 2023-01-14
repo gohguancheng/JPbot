@@ -13,14 +13,16 @@ const JP_TOKEN = env.JP_TOKEN;
 const JpRoute = `api/${JP_TOKEN}/hook`;
 
 app.get("/healthcheck", (req: Request, res: Response) => {
-  res.status(200).send("OK");
+  res.sendStatus(200);
 });
 app.post(`/${JpRoute}`, webhookCallback(JpBot, "express"));
 
 app.listen(port, async () => {
   // setWebhook not required if webhook is set manually via https://api.telegram.org/bot<bot_token>/setWebhook?url=<webhook_url>
   if (env.isProd) {
-    await JpBot.api.setWebhook(`${domain}/${JpRoute}`);
+    await JpBot.api
+      .setWebhook(`${domain}/${JpRoute}`)
+      .catch((err) => console.log(err.message));
     console.log(`JP Bot listening on ${domain}/${JpRoute}:${port}`);
 
     setInterval(async () => {
