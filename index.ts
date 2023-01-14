@@ -32,7 +32,7 @@ app.listen(port, async () => {
       } catch (err) {
         console.log(err);
       }
-    }, 10 * 60 * 1000); // every 10 minutes -> remove for AWS
+    }, 5 * 60 * 1000); // every 5 minutes -> remove for AWS
   } else {
     console.log(`Webhook not set on dev env. Listening on localhost:${port}`);
   }
