@@ -22,7 +22,7 @@ app.listen(port, async () => {
   if (env.isProd) {
     await JpBot.api
       .setWebhook(`${domain}/${JpRoute}`)
-      .catch((err) => console.log(err.message));
+      .catch((err) => console.log(err));
     console.log(`JP Bot listening on ${domain}/${JpRoute}:${port}`);
 
     setInterval(async () => {
