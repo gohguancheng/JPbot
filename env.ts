@@ -12,4 +12,7 @@ export const env = cleanEnv(process.env, {
   SUPER_J_ID: num(),
   DEBUG: str({ default: "" }),
   NODE_ENV: str({ choices: ["development", "production"] }),
+  SERVICE_PRIVATE_KEY: str(),
+  SERVICE_ACCOUNT_EMAIL: str(),
+  SPREADSHEET_ID: str(),
 });
