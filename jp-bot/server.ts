@@ -9,7 +9,6 @@ import {
 import { hydrateReply, parseMode } from "@grammyjs/parse-mode";
 import { commands } from "./commands/info";
 import { callback } from "./callbacks/callback-responses";
-import { updates } from "./updates/updates";
 
 import type { ParseModeFlavor } from "@grammyjs/parse-mode";
 
@@ -23,6 +22,7 @@ export type MyContext = ParseModeFlavor<Context & SessionFlavor<SessionData>>;
 const bot = new Bot<MyContext>(env.JP_TOKEN || env.TEST_TOKEN);
 
 async function runJPBot() {
+
   await bot.use(
     session({
       storage: new MemorySessionStorage(),
@@ -30,7 +30,6 @@ async function runJPBot() {
       initial: () => ({ action: "" }),
     })
   );
-
   await bot.use(hydrateReply);
   await bot.api.config.use(parseMode("HTML"));
 
@@ -50,7 +49,6 @@ async function runJPBot() {
     }
   });
 
-  await bot.use(updates);
   await bot.use(commands);
   await bot.use(callback);
 

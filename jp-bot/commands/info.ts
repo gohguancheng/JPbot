@@ -1,6 +1,6 @@
 import { Composer, InlineKeyboard, Keyboard } from "grammy";
 import { MyContext } from "../server";
-import store from "./../store/index";
+import { getDropOff, getDryClean, getSpecialMessage } from "./../api";
 
 export const commands = new Composer<MyContext>();
 
@@ -37,17 +37,7 @@ const startKeyboard = new Keyboard()
 commands.command("start", async (ctx) => {
   const name = ctx.from?.first_name || ctx.from?.username;
 
-  if (ctx.session.isAdmin) {
-    await ctx.api.setMyCommands(
-      [
-        ...basicCommands,
-        { command: "changehours", description: "Add special announcement" },
-      ],
-      { scope: { type: "chat", chat_id: ctx.chat.id } }
-    );
-  } else {
-    await ctx.api.setMyCommands(basicCommands);
-  }
+  await ctx.api.setMyCommands(basicCommands);
 
   await ctx.reply(
     `Hello there${
@@ -81,25 +71,41 @@ const addressKeyboard = new InlineKeyboard()
   .text("Opening Hours", "hours")
   .url("See Google Maps", "https://goo.gl/maps/wMbykCVjjqV2vjyG8");
 
-export const addressResponse = async (ctx: MyContext) => {
-  ctx.reply(
-    "J&P Laundry is located at:\n<code>150 Silat Ave, #01-40 Block 150, Singapore 160150</code>",
-    {
-      reply_markup: addressKeyboard,
-    }
-  );
+export const addressResponse = async (ctx: MyContext, isBtn: Boolean) => {
+  if (isBtn) {
+    await ctx.editMessageText(
+      "J&P Laundry is located at:\n<code>150 Silat Ave, #01-40 Block 150, Singapore 160150</code>",
+      {
+        reply_markup: addressKeyboard,
+      }
+    );
+  } else {
+    await ctx.reply(
+      "J&P Laundry is located at:\n<code>150 Silat Ave, #01-40 Block 150, Singapore 160150</code>",
+      {
+        reply_markup: addressKeyboard,
+      }
+    );
+  }
 };
-commands.command("address", addressResponse);
+commands.command("address", (ctx) => addressResponse(ctx, false));
 
-export const hoursResponse = async (ctx: MyContext) => {
-  await ctx.reply(
-    "J&P Laundry is opened from:\n\n<b>10AM to 6PM</b>\n(Fri to Wed, closed on Thu)\n\n<i>*Subject to changes mentioned below</i>\n\n" +
-      (store.changes
-        ? `<b>Special Announcements</b>\n${store.changes}`
-        : "<b>Special Announcements</b>\nNo special updates on opening hours")
-  );
+export const hoursResponse = async (ctx: MyContext, isBtn: Boolean) => {
+  const msg = await getSpecialMessage();
+  if (isBtn) {
+    await ctx.editMessageText(
+      "<b>Regular Operating Hours</b>\n\nJ&P Laundry is opened from <b>10AM to 6PM</b> (Fri to Wed)\n\n<i>*Closed on Thursdays</i>"
+    );
+  } else {
+    await ctx.reply(
+      "<b>Regular Operating Hours</b>\n\nJ&P Laundry is opened from <b>10AM to 6PM</b> (Fri to Wed)\n\n<i>*Closed on Thursdays</i>"
+    );
+  }
+  if (msg) {
+    await ctx.reply(msg);
+  }
 };
-commands.command("hours", hoursResponse);
+commands.command("hours", (ctx) => hoursResponse(ctx, false));
 
 commands.command("contact", async (ctx) => {
   await ctx.replyWithContact("+65 6278 0604", "J&P Laundry");
