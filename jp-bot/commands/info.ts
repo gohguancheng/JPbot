@@ -4,22 +4,6 @@ import { getDropOff, getDryClean, getSpecialMessage } from "./../api";
 
 export const commands = new Composer<MyContext>();
 
-const basicCommands = [
-  { command: "start", description: "Start the bot" },
-  { command: "share", description: "Share me" },
-  { command: "address", description: "Locate shop" },
-  { command: "services", description: "Learn about services and price list" },
-  { command: "hours", description: "See updated operating hours" },
-  {
-    command: "contact",
-    description: "Speak to us during opening hours",
-  },
-  {
-    command: "about",
-    description: "Learn about J&P Laundry",
-  },
-];
-
 const startKeyboard = new Keyboard()
   .placeholder("Select commands from below")
   .oneTime()
@@ -34,10 +18,27 @@ const startKeyboard = new Keyboard()
   .text("/about")
   .row();
 
-commands.command("start", async (ctx) => {
-  const name = ctx.from?.first_name || ctx.from?.username;
+const basicCommands = [
+  { command: "start", description: "Start the bot" },
+  { command: "share", description: "Share me" },
+  { command: "address", description: "Location of shop" },
+  { command: "services", description: "Services & Price List" },
+  { command: "hours", description: "Opening Hours" },
+  {
+    command: "contact",
+    description: "Contact Info",
+  },
+  {
+    command: "about",
+    description: "About Us",
+  },
+];
 
+commands.command("start", async (ctx) => {
+  await ctx.api.deleteMyCommands()
   await ctx.api.setMyCommands(basicCommands);
+
+  const name = ctx.from?.first_name || ctx.from?.username;
 
   await ctx.reply(
     `Hello there${
@@ -128,15 +129,3 @@ commands.command(
       `<b>Copy and share the following link</b>\n\n<pre>https://t.me/JPLaundryBot</pre>\n\n<i>Introduce your friends to me (@${ctx.me.username})!</i> 😊`
     )
 );
-
-commands.command("changehours", async (ctx) => {
-  if (ctx.session.isAdmin) {
-    ctx.session.action = "changehours";
-    await ctx.reply(
-      "Please enter special announcement message or enter 'reset' to revert to default message.",
-      {
-        reply_markup: new InlineKeyboard().text("Cancel", "cancel"),
-      }
-    );
-  }
-});
