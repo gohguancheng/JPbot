@@ -35,7 +35,6 @@ const basicCommands = [
 ];
 
 commands.command("start", async (ctx) => {
-  await ctx.api.deleteMyCommands()
   await ctx.api.setMyCommands(basicCommands);
 
   const name = ctx.from?.first_name || ctx.from?.username;
