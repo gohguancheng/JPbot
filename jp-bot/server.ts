@@ -22,7 +22,6 @@ export type MyContext = ParseModeFlavor<Context & SessionFlavor<SessionData>>;
 const bot = new Bot<MyContext>(env.JP_TOKEN || env.TEST_TOKEN);
 
 async function runJPBot() {
-
   await bot.use(
     session({
       storage: new MemorySessionStorage(),
@@ -41,6 +40,24 @@ async function runJPBot() {
     ) {
       ctx.session.isAdmin = true;
     }
+
+    const basicCommands = [
+      { command: "start", description: "Start the bot" },
+      {
+        command: "about",
+        description: "About Us",
+      },
+      { command: "address", description: "Location of shop" },
+      {
+        command: "contact",
+        description: "Contact Info",
+      },
+      { command: "hours", description: "Opening Hours" },
+      { command: "prices", description: "Services & Price List" },
+      { command: "share", description: "Share me" },
+    ];
+
+    await ctx.api.setMyCommands(basicCommands);
 
     if (env.isProd || ctx?.from?.id === env.SUPER_USER_ID) {
       await next();
